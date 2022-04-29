@@ -68,7 +68,7 @@ App = {
      * Replace me...
      */
 
-    $.getJSON('permitOwners.json', function (data) {
+    $.getJSON('permits.json', function (data) {
       // Get the necessary contract artifact file and instantiate it with @truffle/contract
       var PermitionArtifact = data;
       App.contracts.Permition = TruffleContract(PermitionArtifact);
