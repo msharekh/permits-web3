@@ -210,7 +210,7 @@ App.contracts.Permition.deployed().then(function(instance) {
 }).then(function(permitOwners) {
   for (i = 0; i < permitOwners.length; i++) {
     if (permitOwners[i] !== '0x0000000000000000000000000000000000000000') {
-      $('.panel-Permit').eq(i).find('button').text('Success').attr('disabled', true);
+      $('.panel-permit').eq(i).find('button').text('Success').attr('disabled', true);
     }
   }
 }).catch(function(err) {
