@@ -42,7 +42,7 @@ collapse js: ctrl+k+N
 ```json
 {
   "version": "1.0.0",
-  "name": "pet-shop",
+  "name": "permits-web3",
   "dependencies": {
     "lite-server": {
       "version": "2.4.0",
@@ -68,7 +68,7 @@ mkdir permits-web3
 
 cd permits-web3
 ```
-```truffle unbox pet-shop```
+```truffle unbox permit-shop```
 
 ## Directory structure¶
 The default Truffle directory structure contains the following:
@@ -85,27 +85,27 @@ The default Truffle directory structure contains the following:
 - Create a new file named `Permition.sol` in the contracts/ directory.
 ## Variable setup
 
-```address[16] public permits;```
+```address[16] public permitOwners;```
 
-## Your first function: Adopting a pet
+## Your first function: Permitting a Permit
 ```js
-// Adopting a pet
-function adopt(uint petId) public returns (uint) {
-  require(petId >= 0 && petId <= 15);
+// Permitting a Permit
+function permit(uint256 permitId) public returns (uint256) {
+        require(permitId >= 0 && permitId <= 15);
 
-  adopters[petId] = msg.sender;
+        permitOwners[permitId] = msg.sender;
 
-  return petId;
-}
+        return permitId;
+    }
 ```
 
-## Your second function: Retrieving the adopters¶
+## Your second function: Retrieving the permitOwners
 
 ```js
-// Retrieving the adopters
-function getAdopters() public view returns (address[16] memory) {
-  return adopters;
-}
+// Retrieving the permitOwners
+function getPermitOwners() public view returns (address[16] memory) {
+        return permitOwners;
+    }
 ```
 
 # Compiling and migrating the smart contract
@@ -115,13 +115,11 @@ function getAdopters() public view returns (address[16] memory) {
 ```truffle compile```
 
 ```
-msh@Meshals-MacBook-Pro pet-shop-tutorial % truffle compile
-
 Compiling your contracts...
 ===========================
-> Compiling ./contracts/Adoption.sol
+> Compiling ./contracts/Permition.sol
 > Compiling ./contracts/Migrations.sol
-> Artifacts written to /Users/msh/development/pet-shop-tutorial/build/contracts
+> Artifacts written to /Users/msh/development/permit-shop-tutorial/build/contracts
 ```
 
 ## Migration
@@ -134,10 +132,10 @@ Now we are ready to create our own migration script.
 
 
 ```js
-var Adoption = artifacts.require("Adoption");
+var Permition = artifacts.require("Permition");
 
 module.exports = function(deployer) {
-  deployer.deploy(Adoption);
+  deployer.deploy(Permition);
 };
 ```
 ```truffle migrate```
@@ -145,52 +143,18 @@ module.exports = function(deployer) {
 # Testing the smart contract
 ## Testing the smart contract using JavaScript¶
 
-Create a new file named `testAdoption.test.js` in the `test/` directory.
+Create a new file named `testPermition.test.js` in the `test/` directory.
 
 
-```js
-const Adoption = artifacts.require("Adoption");
-
-contract("Adoption", (accounts) => {
-  let adoption;
-  let expectedAdopter;
-
-  before(async () => {
-      adoption = await Adoption.deployed();
-  });
-
-  describe("adopting a pet and retrieving account addresses", async () => {
-    before("adopt a pet using accounts[0]", async () => {
-      await adoption.adopt(8, { from: accounts[0] });
-      expectedAdopter = accounts[0];
-    });
-  });
-});
-
-```
+ 
 
 `truffle test`
 
-```
-Using network 'development'.
 
-
-Compiling your contracts...
-===========================
-> Everything is up to date, there is nothing to compile.
-
-
-  Contract: Adoption
-    adopting a pet and retrieving account addresses
-      ✓ can fetch the address of an owner by pet id (62ms)
-
-
-  1 passing (396ms)
-```
 
 # Creating a user interface to interact with the smart contract
 
-Included with the pet-shop Truffle Box was code for the app's front-end. That code exists within the `src/` directory.
+Included with the permit-shop Truffle Box was code for the app's front-end. That code exists within the `src/` directory.
 
 ## Instantiating web3
 Open /src/js/app.js in a text editor.
@@ -222,42 +186,42 @@ web3 = new Web3(App.web3Provider);
 ## Instantiating the contract
 
 ```js
-$.getJSON('Adoption.json', function(data) {
+$.getJSON('Permition.json', function(data) {
   // Get the necessary contract artifact file and instantiate it with @truffle/contract
-  var AdoptionArtifact = data;
-  App.contracts.Adoption = TruffleContract(AdoptionArtifact);
+  var PermitionArtifact = data;
+  App.contracts.Permition = TruffleContract(PermitionArtifact);
 
   // Set the provider for our contract
-  App.contracts.Adoption.setProvider(App.web3Provider);
+  App.contracts.Permition.setProvider(App.web3Provider);
 
-  // Use our contract to retrieve and mark the adopted pets
-  return App.markAdopted();
+  // Use our contract to retrieve and mark the permited permit
+  return App.markPermitted();
 });
 ```
 
-## Getting The Adopted Pets and Updating The UI
+## Getting The Permition and Updating The UI
 ```js
-var adoptionInstance;
+var permitionInstance;
 
-App.contracts.Adoption.deployed().then(function(instance) {
-  adoptionInstance = instance;
+App.contracts.Permition.deployed().then(function(instance) {
+  permitionInstance = instance;
 
-  return adoptionInstance.getAdopters.call();
-}).then(function(adopters) {
-  for (i = 0; i < adopters.length; i++) {
-    if (adopters[i] !== '0x0000000000000000000000000000000000000000') {
-      $('.panel-pet').eq(i).find('button').text('Success').attr('disabled', true);
+  return permitionInstance.getPermitOwners.call();
+}).then(function(permitOwners) {
+  for (i = 0; i < permitOwners.length; i++) {
+    if (permitOwners[i] !== '0x0000000000000000000000000000000000000000') {
+      $('.panel-Permit').eq(i).find('button').text('Success').attr('disabled', true);
     }
   }
 }).catch(function(err) {
   console.log(err.message);
 });
 ```
-## Handling the adopt() Function
+## Handling the permit() Function
 
 ```js
 
-var adoptionInstance;
+var permitionInstance;
 
 web3.eth.getAccounts(function(error, accounts) {
   if (error) {
@@ -266,13 +230,13 @@ web3.eth.getAccounts(function(error, accounts) {
 
   var account = accounts[0];
 
-  App.contracts.Adoption.deployed().then(function(instance) {
-    adoptionInstance = instance;
+  App.contracts.Permition.deployed().then(function(instance) {
+    permitionInstance = instance;
 
-    // Execute adopt as a transaction by sending account
-    return adoptionInstance.adopt(petId, {from: account});
+    // Execute permit as a transaction by sending account
+    return permitionInstance.permit(permitId, {from: account});
   }).then(function(result) {
-    return App.markAdopted();
+    return App.markPermited();
   }).catch(function(err) {
     console.log(err.message);
   });
@@ -303,11 +267,11 @@ Start the local web server:
 
 > npm run dev
 
-- Adopt pet
+- Permit Permit
   - Breed: Boxer
   - Age: 3
   - Location: Matheny, Utah
-  - by first-adoptor
+  - by first-permited
     - Estimated gas fee
     - 0.00127442
     - 0.001274ETH

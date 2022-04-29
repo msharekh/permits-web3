@@ -1,5 +1,5 @@
-var Adoption = artifacts.require("Adoption");
+var Permition = artifacts.require("Permition");
 
 module.exports = function(deployer) {
-  deployer.deploy(Adoption);
+  deployer.deploy(Permition);
 };

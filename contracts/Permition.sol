@@ -2,19 +2,19 @@ pragma solidity >=0.4.20;
 
 contract Permition {
     
-    address[16] public permits;
+    address[16] public permitOwners;
 
-    // Adopting a pet
-    function adopt(uint256 petId) public returns (uint256) {
-        require(petId >= 0 && petId <= 15);
+    // Permitting a Permit
+    function permit(uint256 permitId) public returns (uint256) {
+        require(permitId >= 0 && permitId <= 15);
 
-        adopters[petId] = msg.sender;
+        permitOwners[permitId] = msg.sender;
 
-        return petId;
+        return permitId;
     }
 
-    // Retrieving the adopters
-    function getAdopters() public view returns (address[16] memory) {
-        return adopters;
+    // Retrieving the permitOwners
+    function getPermitOwners() public view returns (address[16] memory) {
+        return permitOwners;
     }
 }

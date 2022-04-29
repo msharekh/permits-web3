@@ -3,20 +3,20 @@ App = {
   contracts: {},
 
   init: async function () {
-    // Load pets.
-    $.getJSON('../pets.json', function (data) {
-      var petsRow = $('#petsRow');
-      var petTemplate = $('#petTemplate');
+    // Load permits.
+    $.getJSON('../permits.json', function (data) {
+      var permitsRow = $('#permitsRow');
+      var permitTemplate = $('#permitTemplate');
 
       for (i = 0; i < data.length; i++) {
-        petTemplate.find('.panel-title').text(data[i].name);
-        petTemplate.find('img').attr('src', data[i].picture);
-        petTemplate.find('.pet-breed').text(data[i].breed);
-        petTemplate.find('.pet-age').text(data[i].age);
-        petTemplate.find('.pet-location').text(data[i].location);
-        petTemplate.find('.btn-adopt').attr('data-id', data[i].id);
+        permitTemplate.find('.panel-title').text(data[i].name);
+        permitTemplate.find('img').attr('src', data[i].picture);
+        permitTemplate.find('.permit-breed').text(data[i].breed);
+        permitTemplate.find('.permit-age').text(data[i].age);
+        permitTemplate.find('.permit-location').text(data[i].location);
+        permitTemplate.find('.btn-permit').attr('data-id', data[i].id);
 
-        petsRow.append(petTemplate.html());
+        permitsRow.append(permitTemplate.html());
       }
     });
 
@@ -68,16 +68,16 @@ App = {
      * Replace me...
      */
 
-    $.getJSON('Adoption.json', function (data) {
+    $.getJSON('permitOwners.json', function (data) {
       // Get the necessary contract artifact file and instantiate it with @truffle/contract
-      var AdoptionArtifact = data;
-      App.contracts.Adoption = TruffleContract(AdoptionArtifact);
+      var PermitionArtifact = data;
+      App.contracts.Permition = TruffleContract(PermitionArtifact);
 
       // Set the provider for our contract
-      App.contracts.Adoption.setProvider(App.web3Provider);
+      App.contracts.Permition.setProvider(App.web3Provider);
 
-      // Use our contract to retrieve and mark the adopted pets
-      return App.markAdopted();
+      // Use our contract to retrieve and mark the permited permits
+      return App.markPermited();
     });
 
 
@@ -86,29 +86,29 @@ App = {
 
   bindEvents: function () {
 
-    $(document).on('click', '.btn-adopt', App.handleAdopt);
+    $(document).on('click', '.btn-permit', App.handlePermit);
   },
 
-  markAdopted: function () {
+  markPermited: function () {
     /*
      * Replace me...
      */
     
-    var adoptionInstance;
+    var permitionInstance;
 
-    App.contracts.Adoption.deployed().then(function (instance) {
+    App.contracts.Permition.deployed().then(function (instance) {
       $('#contractval').text(`contract: ${instance.address.substr(0,7)}`);
-      adoptionInstance = instance;
+      permitionInstance = instance;
 
-      return adoptionInstance.getAdopters.call();
-    }).then(function (adopters) {
-      console.log(adopters);
-      for (i = 0; i < adopters.length; i++) {
-        if (adopters[i] !== '0x0000000000000000000000000000000000000000') {
+      return permitionInstance.getPermitOwners.call();
+    }).then(function (permitOwners) {
+      console.log(permitOwners);
+      for (i = 0; i < permitOwners.length; i++) {
+        if (permitOwners[i] !== '0x0000000000000000000000000000000000000000') {
           
-          $('.panel-pet').eq(i).find('.pet-owner').text(adopters[i].substr(0,7));
+          $('.panel-Permit').eq(i).find('.permit-owner').text(permitOwners[i].substr(0,7));
 
-          $('.panel-pet').eq(i).find('button').text('Success').attr('disabled', true);
+          $('.panel-Permit').eq(i).find('button').text('Success').attr('disabled', true);
 
         }
       }
@@ -118,16 +118,16 @@ App = {
 
   },
 
-  handleAdopt: function (event) {
+  handlePermit: function (event) {
     event.preventDefault();
 
-    var petId = parseInt($(event.target).data('id'));
+    var permitId = parseInt($(event.target).data('id'));
 
     /*
      * Replace me...
      */
 
-    var adoptionInstance;
+    var permitionInstance;
 
     web3.eth.getAccounts(function (error, accounts) {
       if (error) {
@@ -139,13 +139,13 @@ App = {
        
       console.log(account);
 
-      App.contracts.Adoption.deployed().then(function (instance) {
-        adoptionInstance = instance;
+      App.contracts.Permition.deployed().then(function (instance) {
+        permitionInstance = instance;
 
-        // Execute adopt as a transaction by sending account
-        return adoptionInstance.adopt(petId, { from: account });
+        // Execute permit as a transaction by sending account
+        return permitionInstance.permit(permitId, { from: account });
       }).then(function (result) {
-        return App.markAdopted();
+        return App.markPermited();
       }).catch(function (err) {
         console.log(err.message);
       });
