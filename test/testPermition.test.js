@@ -10,10 +10,10 @@ contract("Permition", (accounts) => {
 
     describe("Permiting a permit and retrieving account addresses", async () => {
         before("Permiting a permit using accounts[0]", async () => {
-            console.log('acc 0: ' + accounts[0]);
-            await permition.permit(8, { from: accounts[0] });
-            expectedPermitOwner = accounts[0];
-            console.log('expectedPermitOwner: ' + accounts[0]);
+            console.log('acc 0: ' + accounts[1]);
+            await permition.permit(8, { from: accounts[1] });
+            expectedPermitOwner = accounts[1];
+            console.log('expectedPermitOwner: ' + accounts[1]);
         });
 
         it("can fetch the address of an owner by Permit id", async () => {
