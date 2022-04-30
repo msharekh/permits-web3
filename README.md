@@ -263,6 +263,7 @@ web3.eth.getAccounts(function(error, accounts) {
 - contract has not been deployed to detected network (network/artifact mismatch) on Rinkeby Network
   - truffle migrate --reset
   - Metamask Connect to GANACHE02 (0xe9e...b788)
+  - truffle migrate --networkId development
 
 
 ## Installing and configuring lite-server
